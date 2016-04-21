@@ -1,0 +1,7 @@
+spring:
+  application.name: provider-ui
+  cloud.config.uri: http://${DOCKER_HOST:localhost}:8888
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration

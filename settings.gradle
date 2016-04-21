@@ -1,0 +1,10 @@
+rootProject.name = 'spring-restoroud'
+include ':cloud-config-server',
+        ':discovery-service-registry',
+        ':oauth-server',
+        ':domain',
+        ':invoice',
+        ':menu',
+        ':provider-ui',
+        ':customer-ui',
+        ':ui'
