@@ -22,38 +22,48 @@ script:
 - docker-compose up -d cloud-config-server
 - docker logs -f spring-restoroud_cloud-config-server_1 &
 - sleep 60
+- http :8888/actuator/health
 #
 - docker-compose up -d discovery-service-registry
 - docker logs -f spring-restoroud_discovery-service-registry_1 &
 - sleep 35
+- http :8761/actuator/health
 #
 - docker-compose up -d oauth-server
 - docker logs -f spring-restoroud_oauth-server_1 &
 - sleep 35
+- http :8000/uaa/actuator/health
 #
 - docker-compose up -d invoice
 - docker logs -f spring-restoroud_invoice_1 &
 - sleep 35
+- http :8001/actuator/health
 #
 - docker-compose up -d menu
 - docker logs -f spring-restoroud_menu_1 &
 - sleep 60
+- http :8002/actuator/health
 #
 - docker-compose up -d customer-ui
 - docker logs -f spring-restoroud_customer-ui_1 &
 - sleep 35
+- http :8003/actuator/health
 #
 - docker-compose up -d provider-ui
 - docker logs -f spring-restoroud_provider-ui_1 &
 - sleep 35
+- http :8004/actuator/health
 #
 - docker-compose up -d ui
 - docker logs -f spring-restoroud_ui_1 &
 - sleep 35
+- http :8080/actuator/health
 #
 - docker-compose down -v
 
 cache:
   directories:
-  - $HOME/.m2
-  - $HOME/.gradle
+  - /home/travis/.m2
+  - /home/travis/.gradle
+  - /home/travis/.gradle
+  - /home/travis/.docker
