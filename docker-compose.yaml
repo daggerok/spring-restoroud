@@ -1,0 +1,187 @@
+version: '2.1'
+
+services:
+
+  cloud-config-server:
+    restart: unless-stopped
+    build:
+      context: ./cloud-config-server
+      dockerfile: ./Dockerfile
+    volumes: ['cloud-config-server-data:/home/appuser']
+    ports: ['8888:8888']
+    networks:
+      public-net:
+        aliases:
+          - ccs
+          - cloud-config-server
+
+  discovery-service-registry:
+    restart: unless-stopped
+    depends_on:
+      cloud-config-server:
+        condition: service_healthy
+    links:
+      - 'cloud-config-server:cloud-config-server'
+    environment:
+      SPRING_CLOUD_CONFIG_URI: 'http://cloud-config-server:8888'
+    build:
+      context: ./discovery-service-registry
+      dockerfile: ./Dockerfile
+    volumes: ['discovery-service-registry-data:/home/appuser']
+    ports: ['8761:8761']
+    networks:
+      public-net:
+        aliases:
+          - dsr
+          - discovery-service-registry
+
+  oauth-server:
+    restart: unless-stopped
+    depends_on:
+      cloud-config-server:
+        condition: service_healthy
+      discovery-service-registry:
+        condition: service_healthy
+    links:
+      - 'cloud-config-server:cloud-config-server'
+      - 'discovery-service-registry:discovery-service-registry'
+    environment:
+      SPRING_CLOUD_CONFIG_URI: 'http://cloud-config-server:8888'
+    build:
+      context: ./oauth-server
+      dockerfile: ./Dockerfile
+    volumes: ['oauth-server-data:/home/appuser']
+    ports: ['8000:8000']
+    networks:
+      public-net:
+        aliases:
+          - os
+          - oauth-server
+
+  invoice:
+    restart: unless-stopped
+    depends_on:
+      cloud-config-server:
+        condition: service_healthy
+      discovery-service-registry:
+        condition: service_healthy
+    links:
+      - 'cloud-config-server:cloud-config-server'
+      - 'discovery-service-registry:discovery-service-registry'
+    environment:
+      SPRING_CLOUD_CONFIG_URI: 'http://cloud-config-server:8888'
+    build:
+      context: ./invoice
+      dockerfile: ./Dockerfile
+    volumes: ['invoice-data:/home/appuser']
+    ports: ['8001:8001']
+    networks:
+      public-net:
+        aliases:
+          - i
+          - invoice
+
+  menu:
+    restart: unless-stopped
+    depends_on:
+      cloud-config-server:
+        condition: service_healthy
+      discovery-service-registry:
+        condition: service_healthy
+    links:
+      - 'cloud-config-server:cloud-config-server'
+      - 'discovery-service-registry:discovery-service-registry'
+    environment:
+      SPRING_CLOUD_CONFIG_URI: 'http://cloud-config-server:8888'
+    build:
+      context: ./menu
+      dockerfile: ./Dockerfile
+    volumes: ['menu-data:/home/appuser']
+    ports: ['8002:8002']
+    networks:
+      public-net:
+        aliases:
+          - m
+          - menu
+
+  customer-ui:
+    restart: unless-stopped
+    depends_on:
+      cloud-config-server:
+        condition: service_healthy
+      discovery-service-registry:
+        condition: service_healthy
+    links:
+      - 'cloud-config-server:cloud-config-server'
+      - 'discovery-service-registry:discovery-service-registry'
+    environment:
+      SPRING_CLOUD_CONFIG_URI: 'http://cloud-config-server:8888'
+    build:
+      context: ./customer-ui
+      dockerfile: ./Dockerfile
+    volumes: ['customer-ui-data:/home/appuser']
+    ports: ['8003:8003']
+    networks:
+      public-net:
+        aliases:
+          - cu
+          - customer-ui
+
+  provider-ui:
+    restart: unless-stopped
+    depends_on:
+      cloud-config-server:
+        condition: service_healthy
+      discovery-service-registry:
+        condition: service_healthy
+    links:
+      - 'cloud-config-server:cloud-config-server'
+      - 'discovery-service-registry:discovery-service-registry'
+    environment:
+      SPRING_CLOUD_CONFIG_URI: 'http://cloud-config-server:8888'
+    build:
+      context: ./provider-ui
+      dockerfile: ./Dockerfile
+    volumes: ['provider-ui-data:/home/appuser']
+    ports: ['8004:8004']
+    networks:
+      public-net:
+        aliases:
+          - pu
+          - provider-ui
+
+  ui:
+    restart: unless-stopped
+    depends_on:
+      cloud-config-server:
+        condition: service_healthy
+      discovery-service-registry:
+        condition: service_healthy
+    links:
+      - 'cloud-config-server:cloud-config-server'
+      - 'discovery-service-registry:discovery-service-registry'
+    environment:
+      SPRING_CLOUD_CONFIG_URI: 'http://cloud-config-server:8888'
+    build:
+      context: ./ui
+      dockerfile: ./Dockerfile
+    volumes: ['ui-data:/home/appuser']
+    ports: ['8080:8080']
+    networks:
+      public-net:
+        aliases:
+          - u
+          - ui
+
+volumes:
+  cloud-config-server-data: {}
+  discovery-service-registry-data: {}
+  oauth-server-data: {}
+  invoice-data: {}
+  menu-data: {}
+  customer-ui-data: {}
+  provider-ui-data: {}
+  ui-data: {}
+
+networks:
+  public-net:
