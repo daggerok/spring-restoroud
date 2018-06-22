@@ -18,5 +18,5 @@ ENTRYPOINT java -Dserver.port=8004 -jar ./app.jar
 EXPOSE 8004
 HEALTHCHECK --timeout=1s \
             --retries=66 \
-            CMD curl -f http://127.0.0.1:8004/admin/health || exit 1
+            CMD curl -f http://127.0.0.1:8004/actuator/health || exit 1
 ADD build/libs/*.jar ./app.jar
