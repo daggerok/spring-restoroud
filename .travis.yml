@@ -52,9 +52,6 @@ script:
 - sleep 35
 #
 - docker-compose down -v
-#
-- ./gradlew compseUp
-- ./gradlew compseDown
 
 cache:
   directories:
