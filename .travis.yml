@@ -1,12 +1,62 @@
 language: java
 jdk: oraclejdk8
+
+addons:
+  apt:
+    update: true
+    packages:
+    - bash
+    - curl
+    - python-pip
+
+install: true
+before_script:
+- sudo pip install httpie docker-compose >/dev/null 2>&1
+
 script:
-  - gradle clean
-  - gradle build
+# build
+- ./gradlew clean build
+# docker-compose
+- docker-compose build
+#
+- docker-compose up -d cloud-config-server
+- docker logs -f spring-restoroud_cloud-config-server_1 &
+- sleep 60
+#
+- docker-compose up -d discovery-service-registry
+- docker logs -f spring-restoroud_discovery-service-registry_1 &
+- sleep 35
+#
+- docker-compose up -d oauth-server
+- docker logs -f spring-restoroud_oauth-server_1 &
+- sleep 35
+#
+- docker-compose up -d invoice
+- docker logs -f spring-restoroud_invoice_1 &
+- sleep 35
+#
+- docker-compose up -d menu
+- docker logs -f spring-restoroud_menu_1 &
+- sleep 60
+#
+- docker-compose up -d customer-ui
+- docker logs -f spring-restoroud_customer-ui_1 &
+- sleep 35
+#
+- docker-compose up -d provider-ui
+- docker logs -f spring-restoroud_provider-ui_1 &
+- sleep 35
+#
+- docker-compose up -d ui
+- docker logs -f spring-restoroud_ui_1 &
+- sleep 35
+#
+- docker-compose down -v
+#
+- ./gradlew compseUp
+- ./gradlew compseDown
+
 cache:
   directories:
-    - .gradle
-    - gradle
-    - $HOME/.gradle
-notifications:
-  on_success: never
+  - $HOME/.m2
+  - $HOME/.gradle
