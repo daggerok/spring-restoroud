@@ -73,5 +73,4 @@ cache:
   directories:
   - /home/travis/.m2
   - /home/travis/.gradle
-  - /home/travis/.gradle
   - /home/travis/.docker
