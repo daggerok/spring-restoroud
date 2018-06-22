@@ -6,7 +6,6 @@ addons:
     update: true
     packages:
     - bash
-    - curl
     - python-pip
 
 install: true
